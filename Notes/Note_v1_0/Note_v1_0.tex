@@ -1,0 +1,33 @@
+\documentclass[11pt]{article}
+\usepackage{fullpage}
+\usepackage{parskip}
+
+\begin{document}
+
+EE3731C - Note 1.0 \\
+
+\textbf{Problem:} $X_{k+1} = f(X_k)$, $k = 0, 1, 2...$ where $f(x)$ is a continuously differentiale function at $x = x_{eq}$, ($x_{eq}$: equilibrium point). Given $f(x_{eq})=x_{eq}$, and $|f'(x_{eq})|<1$ .Prove that $X_k$ is stable around $x_{eq}$\\
+
+\textbf{Solution:}\\
+Let $E_k = X_k - x_{eq}$, we will show that for values of $E_k$ near 0, $E_k$ is bounded as $k \rightarrow \infty$
+
+Since $f'(x_{eq})<1$, we can always find $\varepsilon > 0$, small enough, such that $f'(x_{eq})+\varepsilon < 1$
+
+Moreover, by definition, $\lim _{x \rightarrow x_{eq}} \frac{f(x)-f(x_{eq})}{x-x_{eq}} = f'(x_{eq})$. $\forall \varepsilon$, we can $\delta > 0$, small enough, such that $\forall x$ near $x_{eq}$, $|x-x_{eq}|<\delta$:
+\begin{eqnarray*}
+	\left| \frac{f(x)-f(x_{eq})}{x-x_{eq}} - f'(x_{eq}) \right| &<& \varepsilon \\
+	\left| \frac{f(x)-x_{eq}}{x-x_{eq}}\right| &<& f'(x_{eq}) + \varepsilon  \\
+	\left| \frac{f(x)-x_{eq}}{x-x_{eq}}\right| &<& 1
+\end{eqnarray*}
+
+For values of $X_k$ that near to $x_{eq}$, $|X_k-x_{eq}| < \delta$, we have
+\begin{eqnarray*}
+	\left| \frac{f(X_k)-x_{eq}}{X_k-x_{eq}} \right| &<& 1 \\	
+	\frac{|X_{k+1}-x_{eq}|}{|X_k-x_{eq}|} &<& 1 \\
+	\frac{|E_{k+1}|}{|E_{k}|} &<& 1
+\end{eqnarray*}
+Therefore, when $k \rightarrow \infty$
+$$ |E_{k}| > |E_{k+1}| > |E_{k+2}| > ...$$
+$E_k$ is bounded around 0.
+
+\end{document}
