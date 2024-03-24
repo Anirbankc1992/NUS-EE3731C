@@ -1,0 +1,148 @@
+\documentclass[11pt]{article}
+%\usepackage{fullpage}
+\usepackage[top=0.5in, bottom=0.5in, left=0.5in, right=0.5in]{geometry}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+
+\begin{document}
+
+\title{\Huge EE3731C Signal Processing Methods: Project}
+\author{Nguyen Anh Tuan, Matric No. A0074465Y}
+\maketitle
+
+%-------------------------------------------------------------------------------------------
+\section{Image Denoising}
+
+%-------------------------------------------------------------------------------------------
+\subsection{Haar Wavelet Transform}
+In this section, we will demonstrate the simplest form of wavelet transform, namely, Haar wavelet. For each layer of transformation, a square image $N \times N$ is decomposed into 4 blocks LL, LH, HL and HH, which contain the low-frequency (differential) and high-frequency (average) components along the horizontal and vertical directions respectively. Fig.\ref{Fig_HaarWavelet} demonstrate the transformation where each components are computed as:
+$$
+\left[{\begin{array}{c}
+    ll\\
+	hl\\
+	lh\\
+	hh\\
+\end{array}}\right] =  
+\left[{\begin{array}{cccc}
+	0.5 & 0.5 & 0.5 & 0.5\\
+	0.5 & 0.5 & -0.5 & -0.5\\
+	0.5 & -0.5 & 0.5 & -0.5\\	
+	0.5 & -0.5 & -0.5 & 0.5\\
+\end{array}}\right]
+\left[{\begin{array}{c}
+	x_1\\
+	x_2\\
+	x_3\\
+	x_4\\
+\end{array}}\right]
+$$
+
+Subsequently, the inverse transform could be realized as:
+$$
+\left[{\begin{array}{c}
+    x_1\\
+	x_2\\
+	x_3\\
+	x_4\\
+\end{array}}\right] =  
+\left[{\begin{array}{cccc}
+	0.5 & 0.5 & 0.5 & 0.5\\
+	0.5 & 0.5 & -0.5 & -0.5\\
+	0.5 & -0.5 & 0.5 & -0.5\\	
+	0.5 & -0.5 & -0.5 & 0.5\\
+\end{array}}\right]
+\left[{\begin{array}{c}
+	ll\\
+	hl\\
+	lh\\
+	hh\\
+\end{array}}\right]
+$$
+
+The low-frequency component LL is further decomposed in subsequent level of transformation. Wavelet coefficients are stored in the standard pattern as shown in Fig.\ref{Fig_HaarWaveletPattern}. 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=4in]{Fig_HaarWavelet.png}
+	\caption{2D Haar wavelet transform.}
+	\label{Fig_HaarWavelet}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=2in]{Fig_HaarWaveletPattern.png}
+	\caption{Standard 2D wavelet decomposition.}
+	\label{Fig_HaarWaveletPattern}
+\end{figure}
+
+Haar wavelet transform and inverse transform is applied on image \textit{camera} with 3-level. The results are shown in Fig.\ref{Fig_Camera_WaveletTransform}. As all high-frequency components are used for reconstruction, no differences between the original and the reconstructed images could be observed. 
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}{0.45\textwidth}
+	  	\centering
+		\includegraphics[width=\textwidth]{Fig_Camera_Original.png}        
+		\caption{}
+	    \label{Fig_Camera_Original}	    
+    \end{subfigure}
+	\begin{subfigure}{0.45\textwidth}
+        \centering
+		\includegraphics[width=\textwidth]{Fig_Camera_WaveletCoeff.png}
+		\caption{}
+		\label{Fig_Camera_WaveletCoeff}
+	\end{subfigure}
+	\begin{subfigure}{0.45\textwidth}
+        \centering
+		\includegraphics[width=\textwidth]{Fig_Camera_Reconstruction.png}
+		\caption{}
+		\label{Fig_Camera_Reconstruction}
+	\end{subfigure}
+	\caption{???}\label{Fig_Camera_WaveletTransform}
+\end{figure}
+
+%-------------------------------------------------------------------------------------------
+\subsection{Image Denoising}
+A small amount of Gaussian white noise with variance $\sigma^2$ is added to the image. The amount of distortion is measure in term of Peak-Signal-to-Noise-Ratio (PSNR). The PSNR between 2 original image I and noisy image K is computed as:
+$$ PSNR = 20\log_{10}{(MAX)} - 10\log_{10}{\left(\frac{1}{N^2} \Sigma_{i=0}^N \Sigma_{j=0}^N [I(i, j) - K(i, j)]^2 \right)}
+$$
+Where $MAX = 255$ is the maximum value of each pixel. The noisy \textit{camera} image with $sigma = 10$ and $PSNR = 28.15$ is shown in Fig.???. 
+
+To denoise the image, firstly, Haar wavelet transform with 4-level is performed. Hard-thresholding scheme is applied which set the detail coefficients smaller than threshold $\lambda = 3\sigma$ to zero. As shown in Fig.???, thresholding effectively remove most of the white noise presented in the detail components. By setting the threshold to $\lambda = 3\sigma$, we expect 99\% of the white noise is removed. However, some small details of the original image is inevitably removed. As a result, small amount of artifacts due to denoising could be seen in the reconstructed image, which leads to $PSNR = 30.13$
+
+Different level of noise from $\sigma = 10$ to $\sigma = 80$ is applied to evaluate the performance of denoising algorithm. PSNR before and after denoising is shown in Fig.???. PSNR before denoising decrease exponentially as the noise power increase because $$PSNR \sim - \log_{10}{\left(\frac{1}{N^2} \Sigma_{i=0}^N \Sigma_{j=0}^N [I(i, j) - K(i, j)]^2 \right)} \sim$$
+However, the amount of PSNR improvement is also decrease by totally eliminating the noise, hard-thresholding also remove more details of the original image. 
+
+%-------------------------------------------------------------------------------------------
+\subsection{New Thresholding Scheme}
+
+
+%-------------------------------------------------------------------------------------------
+\section{Image Compression}
+Fig.??? presents the original \textbf{lena} image, while the compressed images with different compression ratio is shown in Fig.???. The PSNR values decrease with higher compression ratio. However, the visual quality of hardly recognizable for 20\% and 10\% compression. The 5\% compression image has lighter color, but the detail is still not significantly degraded. Visible distortions could be seen in the 1\%. Comparing the distribution of wavelet coefficients and the original image pixels. Wavelet transform effectively separates many small details from the more significant components so that they could be filtered out without significant loss of information.
+
+%-------------------------------------------------------------------------------------------
+\section{Signal Filtering}
+Comparing the transfer function expression:
+\begin{eqnarray*}
+H(z) &=& \frac{b(1)+b(2)z^{-1}+...+b(nb+1)z^{-nb}}{1+a(2)z^{-1}+...+a(nb+1)z^{-na}} \\
+	&=& \frac{1}{4}[1+2z^{-1}+z^{-2}]
+\end{eqnarray*}
+We have $a = [1], b = [0.25, 0.5, 0.25]$ for the \textbf{filter} command in MATLAB. Fig.??? presents ECG waveform before and after filtering. 
+
+The power spectrum density of the signals is shown in Fig.???, which clearly indicate that some high-frequency components of the original has been removed. 
+\begin{eqnarray*}
+H(e^{j\omega}) &=& \frac{1}{4}[1 + 2e^{-j\omega} + e^{-2j\omega}] \\
+&=& \frac{1}{4}(1 + e^{-j\omega})^2
+\end{eqnarray*}
+The Hanning filter acts as a high-pass filter with double poles at frequency $f_{3db}=1Hz$. The DC gain is $1/4 = -12dB$. For $f>f_{3db}$, gain decrease with the rate $-40dB/dec$. The frequency response of Hanning filter is presented in Fig.???
+
+%-------------------------------------------------------------------------------------------
+%References
+\begin{thebibliography}{1}
+	\bibitem{Figueiredo_2010}
+	Figueiredo, M. A. T.; Nowak, R. D., "Wavelet-based image estimation: an empirical Bayes approach using Jeffrey's noninformative prior," \emph{Image Processing, IEEE Transactions on} , vol.10, no.9, pp.1322,1331, Sep 2001.
+\end{thebibliography}
+
+\end{document}
